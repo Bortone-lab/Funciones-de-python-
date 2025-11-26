@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funciones Integradas de Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #searchInput:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            padding: 20px;
+        }
+
+        .functions-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .functions-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .functions-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f3f4;
+            vertical-align: top;
+        }
+
+        .functions-table tr:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .function-name {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1em;
+        }
+
+        .function-example {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .function-number {
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .function-desc {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .functions-table {
+                font-size: 0.9em;
+            }
+            
+            .functions-table th,
+            .functions-table td {
+                padding: 10px 8px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Funciones Integradas de Python</h1>
+            <p>Referencia completa de todas las funciones built-in con ejemplos prácticos</p>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="🔍 Buscar función por nombre o descripción...">
+        </div>
+
+        <div class="table-container">
+            <table class="functions-table">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="15%">Función</th>
+                        <th width="45%">Descripción</th>
+                        <th width="35%">Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody id="functionsBody">
+                    <!-- Las filas se generarán con JavaScript -->
+                </tbody>
+            </table>
+            <div id="noResults" class="no-results" style="display: none;">
+                No se encontraron funciones que coincidan con tu búsqueda.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📚 <strong>69 funciones integradas</strong> - Python {{your_version}} - Actualizado: {{current_date}}</p>
+        </div>
+    </div>
+
+    <script>
+        const functions = [
+            {
+                num: 1,
+                name: "abs()",
+                desc: "Devuelve la magnitud de un número. Soporta int, float y complex (en complejos retorna el módulo).",
+                example: "abs(-5) → 5; abs(3+4j) → 5.0"
+            },
+            {
+                num: 2,
+                name: "all()",
+                desc: "Retorna True si todos los elementos del iterable son verdaderos (truthy). Iterable vacío devuelve True.",
+                example: "all([1, True, 'x']) → True"
+            },
+            {
+                num: 3,
+                name: "any()",
+                desc: "Retorna True si al menos un elemento del iterable es verdadero. Iterable vacío devuelve False.",
+                example: "any([0, '', None]) → False"
+            },
+            {
+                num: 4,
+                name: "ascii()",
+                desc: "Retorna una cadena con los caracteres no ASCII escapados con secuencias \\x, \\u, \\U. Útil para depurar.",
+                example: "ascii('á') → \"'\\xe1'\""
+            },
+            {
+                num: 5,
+                name: "bin()",
+                desc: "Convierte un entero a su representación binaria con prefijo '0b'. Para negativos incluye el signo.",
+                example: "bin(8) → '0b1000'"
+            },
+            {
+                num: 6,
+                name: "bool()",
+                desc: "Convierte a booleano usando la 'verdad' del objeto: 0, '', None, [], {} son False; lo demás True.",
+                example: "bool([]) → False"
+            },
+            {
+                num: 7,
+                name: "breakpoint()",
+                desc: "Interrumpe la ejecución y llama al depurador configurado por PYTHONBREAKPOINT. Por defecto usa pdb.",
+                example: "breakpoint()"
+            },
+            {
+                num: 8,
+                name: "bytearray()",
+                desc: "Secuencia mutable de bytes. Puede construirse desde str con encoding, bytes, iterables o longitud inicial.",
+                example: "b = bytearray('hi','utf-8'); b[0]=72"
+            },
+            {
+                num: 9,
+                name: "bytes()",
+                desc: "Secuencia inmutable de bytes. Similar a bytearray pero no se puede modificar.",
+                example: "bytes('hi','utf-8') → b'hi'"
+            },
+            {
+                num: 10,
+                name: "callable()",
+                desc: "Retorna True si el objeto se puede llamar como función (tiene __call__). Funciones, métodos y clases pueden serlo.",
+                example: "callable(len) → True"
+            },
+            {
+                num: 11,
+                name: "chr()",
+                desc: "Devuelve el carácter Unicode para un entero (codepoint). Invierte ord().",
+                example: "chr(65) → 'A'"
+            },
+            {
+                num: 12,
+                name: "classmethod()",
+                desc: "Decora un método para recibir la clase (cls) en lugar de la instancia. Útil para constructores alternativos.",
+                example: "class C: @classmethod def f(cls): ..."
+            },
+            {
+                num: 13,
+                name: "compile()",
+                desc: "Compila código fuente (str) a objeto código (eval, exec, single). No ejecuta por sí mismo.",
+                example: "code = compile('2+3','','eval'); eval(code)"
+            },
+            {
+                num: 14,
+                name: "complex()",
+                desc: "Crea números complejos desde dos reales o un string. Usa x + yj.",
+                example: "complex(2,3) → (2+3j)"
+            },
+            {
+                num: 15,
+                name: "delattr()",
+                desc: "Elimina un atributo por nombre en un objeto si existe y es escribible.",
+                example: "delattr(obj,'x')"
+            },
+            {
+                num: 16,
+                name: "dict()",
+                desc: "Crea diccionarios desde mapeos, iterables de pares o kwargs.",
+                example: "dict([('a',1)], b=2) → {'a':1,'b':2}"
+            },
+            {
+                num: 17,
+                name: "dir()",
+                desc: "Lista nombres accesibles en un objeto. Sin argumentos, muestra nombres en el entorno actual.",
+                example: "dir(str)"
+            },
+            {
+                num: 18,
+                name: "divmod()",
+                desc: "Retorna (cociente, resto) de división entera de a entre b. Soporta int y float.",
+                example: "divmod(7,2) → (3,1)"
+            },
+            {
+                num: 19,
+                name: "enumerate()",
+                desc: "Genera pares (índice, valor) sobre un iterable con índice opcional de inicio.",
+                example: "list(enumerate(['a','b'], start=1))"
+            },
+            {
+                num: 20,
+                name: "eval()",
+                desc: "Evalúa una expresión Python (no bloque) en cadenas dentro de un entorno dado (globals, locals).",
+                example: "eval('2+3') → 5"
+            },
+            {
+                num: 21,
+                name: "exec()",
+                desc: "Ejecuta código Python (bloques) dinámico. Permite definir funciones/variables en dicts de entorno.",
+                example: "exec('x=5'); x → 5"
+            },
+            {
+                num: 22,
+                name: "filter()",
+                desc: "Filtra un iterable usando una función que retorna verdadero/falso. Si función es None, filtra valores truthy.",
+                example: "list(filter(lambda x:x%2,[1,2,3])) → [1,3]"
+            },
+            {
+                num: 23,
+                name: "float()",
+                desc: "Convierte a float desde números o cadenas (acepta nan, inf).",
+                example: "float('3.14') → 3.14"
+            },
+            {
+                num: 24,
+                name: "format()",
+                desc: "Formatea con especificadores (:.2f, >10, etc.). Usa __format__ de tipos.",
+                example: "format(3.1416,'.2f') → '3.14'"
+            },
+            {
+                num: 25,
+                name: "frozenset()",
+                desc: "Conjunto inmutable y hashable. Útil como clave en diccionarios y para conjuntos de conjuntos.",
+                example: "frozenset({1,2})"
+            },
+            {
+                num: 26,
+                name: "getattr()",
+                desc: "Obtiene un atributo por nombre; acepta valor por defecto si no existe.",
+                example: "getattr(obj,'x',0)"
+            },
+            {
+                num: 27,
+                name: "globals()",
+                desc: "Devuelve el dict de variables globales del módulo actual. Mutarlo afecta el entorno global.",
+                example: "globals()['PI']=3.14"
+            },
+            {
+                num: 28,
+                name: "hasattr()",
+                desc: "Retorna True si el objeto posee el atributo (captura AttributeError).",
+                example: "hasattr(obj,'x')"
+            },
+            {
+                num: 29,
+                name: "hash()",
+                desc: "Devuelve el hash de un objeto hashable (inmutable por defecto). Depende de __hash__.",
+                example: "hash('abc')"
+            },
+            {
+                num: 30,
+                name: "help()",
+                desc: "Sistema de ayuda interactivo basado en pydoc. Muestra docstrings y firmas.",
+                example: "help(str)"
+            },
+            {
+                num: 31,
+                name: "hex()",
+                desc: "Convierte un entero a string hexadecimal con prefijo '0x'.",
+                example: "hex(255) → '0xff'"
+            },
+            {
+                num: 32,
+                name: "id()",
+                desc: "Identificador único del objeto durante su vida (normalmente dirección o marcador interno).",
+                example: "id([])"
+            },
+            {
+                num: 33,
+                name: "input()",
+                desc: "Lee una línea desde stdin y retorna string. Muestra prompt si se proporciona.",
+                example: "nombre = input('Nombre: ')"
+            },
+            {
+                num: 34,
+                name: "int()",
+                desc: "Convierte a entero desde números o cadenas con base opcional (int('101',2)).",
+                example: "int('42') → 42"
+            },
+            {
+                num: 35,
+                name: "isinstance()",
+                desc: "Verifica si un objeto es instancia de una clase o tupla de clases (considera herencia).",
+                example: "isinstance(True, bool) → True"
+            },
+            {
+                num: 36,
+                name: "issubclass()",
+                desc: "Verifica relación de herencia entre clases (acepta tupla en el segundo argumento).",
+                example: "issubclass(bool,int) → True"
+            },
+            {
+                num: 37,
+                name: "iter()",
+                desc: "Obtiene un iterador de un iterable o crea uno personalizado con iter(callable, sentinel).",
+                example: "iter([1,2,3])"
+            },
+            {
+                num: 38,
+                name: "len()",
+                desc: "Retorna el tamaño del objeto (colecciones, strings, etc.) mediante __len__.",
+                example: "len({'a':1,'b':2}) → 2"
+            },
+            {
+                num: 39,
+                name: "list()",
+                desc: "Crea listas a partir de iterables o vacío. Copia superficial si se pasa otra lista.",
+                example: "list((1,2)) → [1,2]"
+            },
+            {
+                num: 40,
+                name: "locals()",
+                desc: "Devuelve dict de variables locales dentro del marco actual. En funciones es de solo lectura práctico.",
+                example: "locals().get('x')"
+            },
+            {
+                num: 41,
+                name: "map()",
+                desc: "Aplica una función a cada elemento de uno o más iterables, produciendo un iterador.",
+                example: "list(map(str,[1,2])) → ['1','2']"
+            },
+            {
+                num: 42,
+                name: "max()",
+                desc: "Retorna el máximo de un iterable o de argumentos, con key opcional y default si iterable vacío.",
+                example: "max([3,7,2]) → 7"
+            },
+            {
+                num: 43,
+                name: "memoryview()",
+                desc: "Crea una vista de memoria sin copias sobre objetos de buffer (bytes, bytearray), soporta slicing.",
+                example: "memoryview(b'abc')[0] → 97"
+            },
+            {
+                num: 44,
+                name: "min()",
+                desc: "Retorna el mínimo de un iterable o de argumentos, con key y default.",
+                example: "min([3,7,2]) → 2"
+            },
+            {
+                num: 45,
+                name: "next()",
+                desc: "Obtiene el siguiente elemento de un iterador; acepta valor por defecto para evitar StopIteration.",
+                example: "it=iter([1,2]); next(it, None)"
+            },
+            {
+                num: 46,
+                name: "object()",
+                desc: "Crea una instancia mínima (base de todas las clases). Útil para comparación/identidad.",
+                example: "object()"
+            },
+            {
+                num: 47,
+                name: "oct()",
+                desc: "Convierte un entero a su representación octal con prefijo '0o'.",
+                example: "oct(8) → '0o10'"
+            },
+            {
+                num: 48,
+                name: "open()",
+                desc: "Abre archivos. Soporta modos ('r', 'w', 'a', 'b'), encoding, buffering y gestión de contexto.",
+                example: "with open('f.txt','w',encoding='utf-8') as f: f.write('hola')"
+            },
+            {
+                num: 49,
+                name: "ord()",
+                desc: "Retorna el codepoint Unicode del carácter (inverso de chr).",
+                example: "ord('A') → 65"
+            },
+            {
+                num: 50,
+                name: "pow()",
+                desc: "Potencia a**b; con tercer argumento calcula potencia modular eficiente ((a**b) % m).",
+                example: "pow(2,3,3) → 2"
+            },
+            {
+                num: 51,
+                name: "print()",
+                desc: "Imprime objetos en stdout con separador sep, final end y redirección a file.",
+                example: "print('a','b', sep='-') → a-b"
+            },
+            {
+                num: 52,
+                name: "property()",
+                desc: "Crea propiedades en clases con getters/setters/deleters y docstring. Encapsula acceso a atributos.",
+                example: "class C: @property def x(self): return 1"
+            },
+            {
+                num: 53,
+                name: "range()",
+                desc: "Secuencia inmutable de enteros (inicio, fin, paso), eficiente en memoria.",
+                example: "range(1,5,2) → 1,3"
+            },
+            {
+                num: 54,
+                name: "repr()",
+                desc: "Retorna la representación oficial del objeto (para desarrolladores), usando __repr__.",
+                example: "repr({'a':1}) → \"{'a': 1}\""
+            },
+            {
+                num: 55,
+                name: "reversed()",
+                desc: "Iterador que recorre una secuencia al revés (requiere tamaño y acceso por índice o __reversed__).",
+                example: "list(reversed([1,2,3])) → [3,2,1]"
+            },
+            {
+                num: 56,
+                name: "round()",
+                desc: "Redondeo de punto flotante al número de dígitos; banca redondeo a par por defecto.",
+                example: "round(2.5) → 2; round(3.5) → 4"
+            },
+            {
+                num: 57,
+                name: "set()",
+                desc: "Conjunto mutable sin duplicados; operaciones de teoría de conjuntos (|, &, -).",
+                example: "set([1,1,2]) → {1,2}"
+            },
+            {
+                num: 58,
+                name: "setattr()",
+                desc: "Asigna un atributo por nombre en un objeto si es escribible.",
+                example: "setattr(obj,'x',10)"
+            },
+            {
+                num: 59,
+                name: "slice()",
+                desc: "Objeto de corte con start, stop, step; útil para aplicar cortes reutilizables.",
+                example: "s = slice(1,5,2); [0,1,2,3,4,5][s] → [1,3]"
+            },
+            {
+                num: 60,
+                name: "sorted()",
+                desc: "Retorna una nueva lista ordenada; acepta key, reverse. No modifica el original.",
+                example: "sorted(['b','a'], key=str.lower)"
+            },
+            {
+                num: 61,
+                name: "staticmethod()",
+                desc: "Decora un método que no recibe self ni cls. Funciona como función dentro de clase.",
+                example: "class C: @staticmethod def f(): ..."
+            },
+            {
+                num: 62,
+                name: "str()",
+                desc: "Convierte a cadena usando __str__ o representación por defecto.",
+                example: "str(42) → '42'"
+            },
+            {
+                num: 63,
+                name: "sum()",
+                desc: "Suma elementos numéricos del iterable con valor inicial opcional (no apto para concatenar strings).",
+                example: "sum([1,2,3], start=0) → 6"
+            },
+            {
+                num: 64,
+                name: "super()",
+                desc: "Accede a métodos de la superclase respetando MRO (cooperativo en herencia múltiple).",
+                example: "class C(B): def f(self): return super().f()"
+            },
+            {
+                num: 65,
+                name: "tuple()",
+                desc: "Crea tuplas (inmutables) desde iterables; empaquetado ligero.",
+                example: "tuple({1,2}) → (1,2) (orden no garantizado)"
+            },
+            {
+                num: 66,
+                name: "type()",
+                desc: "Retorna el tipo del objeto o crea clases dinámicas con type(name, bases, dict).",
+                example: "type(3) → <class 'int'>"
+            },
+            {
+                num: 67,
+                name: "vars()",
+                desc: "Retorna el __dict__ de un objeto con atributos; si no existe, puede fallar.",
+                example: "vars(obj)"
+            },
+            {
+                num: 68,
+                name: "zip()",
+                desc: "Agrega elementos por posición de múltiples iterables; corta al más corto.",
+                example: "list(zip([1,2],['a','b','c'])) → [(1,'a'),(2,'b')]"
+            },
+            {
+                num: 69,
+                name: "__import__()",
+                desc: "Importación de bajo nivel usada por import. Permite control sobre level y fromlist.",
+                example: "m = __import__('math'); m.sqrt(4) → 2.0"
+            }
+        ];
+
+        function renderFunctions(filteredFunctions = functions) {
+            const tbody = document.getElementById('functionsBody');
+            const noResults = document.getElementById('noResults');
+            
+            if (filteredFunctions.length === 0) {
+                tbody.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            
+            tbody.innerHTML = filteredFunctions.map(func => `
+                <tr>
+                    <td class="function-number">${func.num}</td>
+                    <td>
+                        <div class="function-name tooltip" data-tooltip="Click para copiar">${func.name}</div>
+                    </td>
+                    <td class="function-desc">${func.desc}</td>
+                    <td>
+                        <div class="function-example">${func.example}</div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Agregar event listeners para copiar
+            document.querySelectorAll('.function-name').forEach(el => {
+                el.addEventListener('click', () => {
+                    const functionName = el.textContent.replace('()', '');
+                    navigator.clipboard.writeText(functionName).then(() => {
+                        const originalText = el.textContent;
+                        el.textContent = '✓ Copiado!';
+                        setTimeout(() => {
+                            el.textContent = originalText;
+                        }, 1000);
+                    });
+                });
+            });
+        }
+
+        // Búsqueda en tiempo real
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = functions.filter(func => 
+                func.name.toLowerCase().includes(searchTerm) ||
+                func.desc.toLowerCase().includes(searchTerm) ||
+                func.example.toLowerCase().includes(searchTerm)
+            );
+            renderFunctions(filtered);
+        });
+
+        // Render inicial
+        renderFunctions();
+    </script>
+</body>
+</html>
